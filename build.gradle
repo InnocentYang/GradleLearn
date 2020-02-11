@@ -1,3 +1,11 @@
+apply from: 'other.gradle'
+
+task test {
+    doLast {
+        println "版本 : ${version}\n地址 : ${url}"
+    }
+}
+
 task hello {
     group = 'build'
     description = 'hello world'
