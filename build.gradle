@@ -33,5 +33,74 @@ task go(dependsOn: hello) {
     }
 }
 
+task methodTest {
+    doLast {
+        /*add(1, 2)
+        println "minus result = ${minus(1, 2)}"*/
 
+        for (i in 0..3) {
+            println i
+        }
+    }
+}
 
+def add(int num1, int num2) {
+    println num1 + num2
+}
+
+int minus(int num1, int num2) {
+    return num1 - num2
+}
+
+task classTest {
+    doLast {
+        def person = new Person()
+        person.increaseAge 5
+        println person.age
+    }
+}
+
+class Person {
+    String name
+    Integer age = 10
+
+    def increaseAge(Integer years) {
+        this.age += years
+    }
+}
+
+task listTest {
+    doLast {
+        /*def number = [1, 2, 3]
+        assert number instanceof List
+        def linkedList = [1, 2, 3] as LinkedList
+        assert linkedList instanceof LinkedList*/
+
+        def number = [1, 2, 3, 4]
+        assert number[1] == 2
+        assert number[-1] == 4
+
+        number << 5
+        assert number[4] == 5
+        assert number[-1] == 5
+    }
+}
+
+task mapTest {
+    doLast {
+        def name = [one: "魏无羡", two: "杨影枫", three: "张无忌"]
+        assert name['one'] == "魏无羡"
+        assert name.two == "杨影枫"
+    }
+}
+
+task fileTest {
+    doLast {
+        def fileName = 'F:\\Test\\git_pro\\build.gradle'
+        def file = new File(fileName)
+        /*file.eachLine {
+            println it
+        }*/
+        println file.text
+    }
+}
