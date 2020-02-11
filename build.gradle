@@ -1,0 +1,37 @@
+task hello {
+    group = 'build'
+    description = 'hello world'
+
+    doLast {
+        println "任务分组: ${group}"
+        println "任务描述: ${description}"
+    }
+}
+
+def Task hello2 = task(hello2, group: BasePlugin.BUILD_GROUP)
+hello2.doLast {
+    println "Hello World 2"
+}
+
+tasks.create(name: "hello3") {
+    doLast {
+        println "Hello World 3"
+    }
+}
+
+task go(dependsOn: hello) {
+    doLast {
+        println "go for it"
+    }
+}
+
+3.times { number ->
+    task "task$number" {
+        doLast {
+            println "task $number"
+        }
+    }
+}
+
+
+
