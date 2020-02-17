@@ -1,0 +1,120 @@
+task hello {
+    doLast {
+        println 'hello world by Android Gradle权威指南'
+    }
+}
+
+task printStringClass {
+	doLast {
+		def str1 = '单引号'
+		def str2 = "双引号"
+
+		println "单引号定义的字符串类型 : " + str1.getClass().name
+		println "双引号定义的字符串类型 : " + str2.getClass().name
+	}
+}
+
+task printStringVar {
+	doLast {
+		def name = "张三"
+
+		println '单引号的变量计算 : ${name}'
+		println "双引号的变量计算 : ${name}"
+	}
+}
+
+task printList {
+	doLast {
+		def numList = [1, 2, 3, 4, 5, 6]
+		println numList.getClass().name
+
+		println "index = 1, value = ${numList[1]}"
+		println "index = -1, value = ${numList[-1]}"
+		println "index = -2, value = ${numList[-2]}"
+		println "index = from 1 to 3, value = ${numList[1..3]}"
+
+		numList.each {
+			println it
+		}
+	}
+}
+
+task printMap {
+	doLast {
+		def map = ['width': 1024, 'height': 768]
+		println map.getClass().name
+
+		println "width = ${map['width']}"
+		println "height = ${map.height}"
+
+		map.each {
+			println "key = ${it.key}, value = ${it.value}"
+		}
+	}
+}
+
+task invokeMethod {
+	doLast {
+		sum(1, 2)
+		sum 3, 4
+	}
+}
+
+def sum(int num1, int num2) {
+	println num1 + num2
+}
+
+task printMethodReturn {
+	doLast {
+		def max1 = max 1, 2
+		def max2 = max 5, 3
+		println "max1 = ${max1}, max2 = ${max2}"
+	}
+}
+
+def max(int num1, int num2) {
+	if (num1 > num2) {
+		num1
+	} else {
+		num2
+	}
+}
+
+task helloJavaBean {
+	doLast {
+		Person person = new Person()
+		println "name = ${person.name}"
+		person.name = "张三"
+		println "name = ${person.name}"
+	}
+}
+
+class Person {
+	private String name
+}
+
+def customEach(closure) {
+	// 模拟一个有10个元素的集合, 开始迭代
+	for (int i in 1..10) {
+		closure(i)
+	}
+}
+
+task helloClosure {
+	doLast {
+		customEach {
+			println it
+		}
+
+		eachMap { k, v ->
+			println "$k = $v"
+		}
+	}
+}
+
+def eachMap(closure) {
+	def map = ["name":"张三", "age":18]
+	map.each {
+		closure(it.key, it.value)
+	}
+}
