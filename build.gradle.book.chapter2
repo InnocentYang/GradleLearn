@@ -118,3 +118,77 @@ def eachMap(closure) {
 		closure(it.key, it.value)
 	}
 }
+
+task helloDelegate {
+	doLast {
+		new Delegate().test {
+			println "thisObject : ${thisObject.getClass()}"
+			println "owner : ${owner.getClass()}"
+			println "delegate : ${delegate.getClass()}"
+			
+			method1()
+			it.method1()
+		}
+	}
+}
+
+def method1() {
+	println "context this : ${this.getClass()} in root"
+	println "method1 in root"
+}
+
+class Delegate {
+	def method1() {
+		println "delegate this : ${this.getClass()} in Delegate"
+		println "method1 in Delegate"
+	}
+	
+	def test(Closure<Delegate> closure) {
+		closure(this)
+	}
+}
+
+class Person2 {
+	String personName
+	int personAge
+	
+	def dumpPerson() {
+		println "name is ${personName}, age is ${personAge}"
+	}
+}
+
+def person(Closure<Person2> closure) {
+	Person2 p = new Person2()
+	closure.delegate = p
+	// 委托模式优先
+	closure.setResolveStrategy(Closure.DELEGATE_FIRST)
+	closure(p)
+}
+
+task configClosure {
+	doLast {
+		person {
+			personName = "张三"
+			personAge = 20
+			dumpPerson()
+		}
+	}
+}
+
+def scriptClosure = {
+	println "scriptClosure this = " + this
+	println "scriptClosure owner = " + owner
+	println "scriptClosure delegate = " + delegate
+}
+
+scriptClosure.call()
+
+
+
+
+
+
+
+
+
+
