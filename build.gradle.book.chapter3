@@ -1,0 +1,91 @@
+apply plugin: "java"
+
+// 自定义一个Project的属性
+ext.age = 18
+
+// 通过代码块同时自定义多个属性
+ext {
+	phone = 1333341
+	address = "世界花园"
+}
+
+task customTask1 {
+	doFirst {
+		println "customTask1 doFirst A"
+	}
+	doFirst {
+		println "customTask1 doFirst B"
+	}
+	doLast {
+		println "customTask1 doLast A"
+	}
+	doLast {
+		println "customTask1 doLast B"
+	}
+	// println "config"
+}
+
+task ex35World {
+	doLast {
+		println "ex35World"
+	}
+}
+
+task ex35Hello {
+	doLast {
+		println "ex35Hello"
+	}
+}
+
+task ex35Main(dependsOn: ex35Hello) {
+	doLast {
+		println "ex35Main"
+	}
+}
+
+task ex35MultiTask {
+	dependsOn ex35Hello, ex35World
+	doLast {
+		println "ex35MultiTask"
+	}
+}
+
+task ex36Hello {
+	doLast {
+		println "ex36Hello doLast1"
+	}
+}
+ex36Hello.doFirst {
+	println "ex36Hello doFirst"
+}
+ex36Hello.doLast {
+	println project.hasProperty("ex36Hello")
+	println "ex36Hello doLast2"
+}
+
+sourceSets.all {
+	ext.resourcesDir = null
+}
+
+sourceSets {
+	main {
+		resourcesDir = 'main/res'
+	}
+	test {
+		resourcesDir = 'test/res'
+	}
+}
+
+task ex37CustomProperty {
+	doLast {
+		println "年龄 : ${age}"
+		println "电话 : ${phone}"
+		println "住址 : ${address}"
+		
+		sourceSets.each {
+			println "${it.name}'s resourcesDir is ${it.resourcesDir}"
+		}
+	}
+}
+
+
