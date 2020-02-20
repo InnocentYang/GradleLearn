@@ -1,0 +1,20 @@
+apply plugin:'java'
+apply from:'version.gradle'
+
+task ex52PrintTask {
+	doLast {
+		println "versionName = ${versionName}, versionCode = ${versionCode}"
+	}
+}
+
+apply plugin: Ex53CustomPlugin
+
+class Ex53CustomPlugin implements Plugin<Project> {
+	void apply(Project project) {
+		project.task('ex53CustomTask') {
+			doLast {
+				println "这是一个通过自定义插件方式创建的任务"
+			}
+		}
+	}
+}
