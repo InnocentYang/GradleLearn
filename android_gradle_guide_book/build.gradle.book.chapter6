@@ -1,0 +1,18 @@
+apply plugin: "java"
+
+sourceSets {
+	main {
+		// 这里对main SourceSet配置
+	}
+	vip {
+		
+	}
+}
+
+task ex65SourceSetTask {
+	doLast {
+		sourceSets.all {
+			println name
+		}
+	}
+}
