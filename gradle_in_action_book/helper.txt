@@ -1,0 +1,3 @@
+配置Demo的GitHub地址
+github.com/bmuschko/gradle-in-action-source
+
