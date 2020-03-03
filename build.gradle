@@ -1,0 +1,168 @@
+apply plugin: 'java'
+
+version = ""
+// sourceCompatibility = 1.6
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'com.manning.gia.todo.ToDoApp'
+	}
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ['src']
+		}
+	}
+	test {
+		java {
+			srcDirs = ['test']
+		}
+	}
+}
+
+// buildDir = 'out'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
+}
+
+task first {
+	doLast {
+		println "first"
+	}
+}
+
+task second {
+	doLast {
+		println "second"
+	}
+}
+
+task printVersion(group: 'versioning', description: 'prints project version',
+	dependsOn: [second, first]) {
+	doLast {
+		logger.quiet "Version : $version"
+	}
+	doFirst {
+		println "Before reading the version"
+	}
+}
+
+printVersion.doFirst {
+	println "First Action"
+}
+
+printVersion.doLast {
+	println "Last Action"
+}
+
+task third {
+	doLast {
+		println "third"
+	}
+}
+
+third.dependsOn printVersion
+first.finalizedBy second
+
+class ProjectVersion {
+	Integer major
+	Integer minor
+	Boolean release
+
+	ProjectVersion(Integer major, Integer minor) {
+		this(major, minor, Boolean.FALSE)
+	}
+
+	ProjectVersion(Integer major, Integer minor, Boolean release) {
+		this.major = major;
+		this.minor = minor;
+		this.release = release
+	}
+
+	@Override
+	String toString() {
+		return "${major}.${minor}${release ? '' : '-SNAPSHOT'}"
+	}
+}
+
+ext.versionFile = file('version.properties')
+
+task loadVersion {
+	project.version = readVersion()
+}
+
+ProjectVersion readVersion() {
+	logger.quiet 'Reading the version file'
+
+	if (!versionFile.exists()) {
+		throw new GradleException("Required version file does not exist: ${versionFile.canonicalPath}")
+	}
+
+	Properties versionProps = new Properties()
+	versionFile.withInputStream { stream -> 
+		versionProps.load(stream)
+	}
+
+	return new ProjectVersion(versionProps.major.toInteger(),
+		versionProps.minor.toInteger(),
+		versionProps.release.toBoolean())
+}
+
+task makeReleaseVersion(group: 'versioning', description: 'Makes project a release version') {
+	inputs.property('release', version.release)
+	outputs.file versionFile
+
+	doLast {
+		version.release = true
+		ant.propertyfile(file: versionFile) {
+			entry(key: 'release', type: 'string', operation: '=', value: 'true')
+		}
+	}
+}
+
+class ReleaseVersionTask extends DefaultTask {
+	@Input Boolean release
+	@OutputFile File destFile
+
+	ReleaseVersionTask() {
+		group = 'versioning'
+		description = 'Makes project a release version'
+	}
+
+	@TaskAction
+	void start() {
+		project.version.release = true
+		ant.propertyfile(file: destFile) {
+			entry(key: 'release', type: 'string', operation: '=', value: 'true')
+		}
+	}
+}
+
+task makeReleaseVersion2(type: ReleaseVersionTask) {
+	release = version.release
+	destFile = versionFile
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
